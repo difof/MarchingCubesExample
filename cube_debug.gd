@@ -17,6 +17,7 @@ extends MeshInstance3D
 @onready var _label_container: Node3D = $LabelContainer
 @onready var _surface_mesh: MeshInstance3D = $SurfaceMesh
 @onready var _vertex_mesh_container: Node3D = $VertexMeshContainer
+@onready var _normals_mesh: MeshInstance3D = $NormalsMesh
 
 var _active_vertex_mat := StandardMaterial3D.new()
 var _inactive_vertex_mat := StandardMaterial3D.new()
@@ -47,13 +48,23 @@ func _draw_surface():
     var info = MarchingCube.get_meshinfo_at_combination_index(index)
     print("index: %s, verts: %s" % [index, info.verts])
 
+    var im_norms := ImmediateMesh.new()
+    im_norms.surface_begin(Mesh.PRIMITIVE_LINES)
+    
     for i in range(0, len(info.verts)):
         var vert = info.verts[i]
+        var norm = info.normals[i]
+
         im_sur.surface_add_vertex(vert)
 
+        im_norms.surface_add_vertex(vert)
+        im_norms.surface_add_vertex(vert + norm * .3)
+
+    im_norms.surface_end()
     im_sur.surface_end()
 
     _surface_mesh.mesh = im_sur
+    _normals_mesh.mesh = im_norms
 
 
 func _build_cube_mesh():
@@ -83,6 +94,8 @@ func _build_cube_mesh():
             vertex_mesh.material = _inactive_vertex_mat
             vertex_mesh_instance.mesh = vertex_mesh
             _vertex_mesh_container.add_child(vertex_mesh_instance)
+            
+            # _draw_vertex_normal(im_edges_wireframe, vertex)
 
         # add edge labels
         var edge_label := Label3D.new()
@@ -96,10 +109,24 @@ func _build_cube_mesh():
         im_edges_wireframe.surface_add_vertex(vertex)
         im_edges_wireframe.surface_add_vertex(next_v)
 
+    # _draw_face_normals(im_edges_wireframe)
+
     # use edge mesh as this node's mesh
     im_edges_wireframe.surface_end()
     mesh = im_edges_wireframe
-    
+
+
+func _draw_face_normals(im: ImmediateMesh):
+    for vec in MarchingCube.face_normals:
+        im.surface_add_vertex(vec)
+        im.surface_add_vertex(vec+vec*.3)
+
+
+func _draw_vertex_normal(im: ImmediateMesh, vert: Vector3):
+    var dir = Vector3.ZERO.direction_to(vert)
+    im.surface_add_vertex(vert)
+    im.surface_add_vertex(vert + dir * .3)
+
 
 func _reset_vertex_mesh_states():
     for child in _vertex_mesh_container.get_children():

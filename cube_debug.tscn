@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://by33m28qy0ic6"]
+[gd_scene load_steps=8 format=3 uid="uid://by33m28qy0ic6"]
 
 [ext_resource type="Script" path="res://cube_debug.gd" id="1_kaj5u"]
 
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_o7p3o"]
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_ru4yn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5ucyj"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -19,12 +19,15 @@ ssao_enabled = true
 sdfgi_enabled = true
 glow_enabled = true
 
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_4q7qp"]
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_c66lf"]
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_j3rtx"]
 
 [node name="cube_debug" type="MeshInstance3D"]
-mesh = SubResource("ImmediateMesh_o7p3o")
+mesh = SubResource("ImmediateMesh_ru4yn")
 script = ExtResource("1_kaj5u")
-active_vertices = [false, false, false, false, false, false, false, false]
+active_vertices = [true, false, false, false, false, false, false, false]
+show_labels = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_rmu8l")
@@ -50,8 +53,12 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="SurfaceMesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("ImmediateMesh_4q7qp")
+mesh = SubResource("ImmediateMesh_c66lf")
 
 [node name="LabelContainer" type="Node3D" parent="."]
+visible = false
 
 [node name="VertexMeshContainer" type="Node3D" parent="."]
+
+[node name="NormalsMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("ImmediateMesh_j3rtx")
