@@ -34,16 +34,11 @@ static func get_meshinfo_at_combination_index(index: int):
     var normals = []
     var uvs = []
     var corners = get_corners_at_combination_index(index)
-    var adjacent_faces = {}
     
     for corner in corners:
-        var cornerv_1 = edge_vertices[corner*2]
-        var cornerv_2 = edge_vertices[corner*2 + 1]
-        var point = cornerv_1.direction_to(cornerv_2) + cornerv_1
-        vertices.append(point)
-        normals.append(Vector3(0, 0, 0))
+        vertices.append(midpoints[corner])
+        normals.append((midpoints[corner]/2).normalized())
         uvs.append(Vector2(0, 0))
-        # TODO: calculate normals and uvs
 
     return {
         verts = vertices,
@@ -51,6 +46,15 @@ static func get_meshinfo_at_combination_index(index: int):
         uvs = uvs,
     }
 
+
+const face_normals = [
+    Vector3(0, -1, 0), # bottom face
+    Vector3(0, 1, 0), # top face
+    Vector3(0, 0, -1), # front face
+    Vector3(0, 0, 1), # back face
+    Vector3(-1, 0, 0), # left face
+    Vector3(1, 0, 0), # right face
+]
 
 const edge_vertices = [
     # bottom face
@@ -72,6 +76,20 @@ const edge_vertices = [
     Vector3(-1, -1, 1), Vector3(-1, 1, 1), #e11
 ]
 
+const midpoints = [
+    Vector3(0, -1, -1), # e0
+    Vector3(1, -1, 0), # e1
+    Vector3(0, -1, 1), # e2
+    Vector3(-1, -1, 0), # e3
+    Vector3(0, 1, -1), # e4
+    Vector3(1, 1, 0), # e5
+    Vector3(0, 1, 1), # e6
+    Vector3(-1, 1, 0), # e7
+    Vector3(-1, 0, -1), # e8
+    Vector3(1, 0, -1), # e9
+    Vector3(1, 0, 1), # e10
+    Vector3(-1, 0, 1), # e11
+]
 
 const lookup_table = [
     [],
